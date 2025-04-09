@@ -28,6 +28,83 @@ print("Welcome back to the UW Calculator")
 //: IMPORTANT: If any tests are commented out, you will be graded a zero (0)! You should never be in the habit of eliminating tests to make the code pass.
 //:
 class Calculator {
+    
+    // basic operations: + - * /
+    func add(lhs: Int, rhs: Int) -> Int {
+        return lhs + rhs
+    }
+    
+    func subtract(lhs: Int, rhs: Int) -> Int {
+        return lhs - rhs
+    }
+    
+    func multiply(lhs: Int, rhs: Int) -> Int {
+        return lhs * rhs
+    }
+    
+    func divide(lhs: Int, rhs: Int) -> Int {
+        if rhs == 0 {
+            fatalError("Error: Cannot divide by zero")
+        } else {
+            return lhs / rhs
+        }
+    }
+    
+    // regular mathOP
+    func mathOp(lhs: Int, rhs: Int, op: (Int, Int) -> Int) -> Int {
+        return op(lhs, rhs)
+    }
+    
+    // array number operation
+    func add(_ args: [Int]) -> Int {
+        return args.reduce(0, +)
+    }
+    
+    func multiply(_ args: [Int]) -> Int {
+        return args.reduce(1, *)
+    }
+    
+    func count(_ args: [Int]) -> Int {
+        return args.count
+    }
+    
+    func avg(_ args: [Int]) -> Int {  // asume only integer output for averga
+        if args.isEmpty {
+            return 0
+        }
+        return add(args) / count(args)
+    }
+    
+    // mathOp with beg and array number
+    func mathOp(args: [Int], beg: Int, op: (Int, Int) -> Int) -> Int {
+        return args.reduce(beg, op)
+    }
+    
+    // 2d array operation
+    func add(lhs: (Int, Int), rhs: (Int, Int)) -> (Int, Int) {
+        return (lhs.0 + rhs.0, lhs.1 + rhs.1)
+    }
+    
+    func subtract(lhs: (Int, Int), rhs: (Int, Int)) -> (Int, Int) {
+        return (lhs.0 - rhs.0, lhs.1 - rhs.1)
+    }
+    
+    // dictionary number operation
+    func add(lhs: [String: Int], rhs: [String: Int]) -> [String: Int] {
+        var result = [String: Int]()  // initialize result
+        for key in lhs.keys {
+            result[key] = (lhs[key] ?? 0) + (rhs[key] ?? 0)
+        }
+        return result
+    }
+    
+    func subtract(lhs: [String: Int], rhs: [String: Int]) -> [String: Int] {
+        var result = [String: Int]()  // initialize result
+        for key in lhs.keys {
+            result[key] = (lhs[key] ?? 0) - (rhs[key] ?? 0)
+        }
+        return result
+    }
 }
 
 //: Don't change the name of this object (`calc`); it's used in all the tests.
@@ -43,6 +120,27 @@ let calc = Calculator()
 //: Keep in mind that writing new tests may reveal ambiguity in the specification above--if that's the case, document the ambiguity, declare what you think *should* happen, and write the test to test for it.
 
 // ===== Your tests go here
+calc.add(lhs: -2, rhs: -2) == -4
+
+// This would crash: divide by zero triggers fatalError
+//calc.divide(lhs: 2, rhs: 0)  // Expected: should crash with "Error: Cannot divide by zero"
+
+calc.divide(lhs: 0, rhs: 2) == 0
+
+calc.multiply([]) == 1
+
+calc.avg([]) == 0
+
+let pd3 = ["x": 0, "y": 0]
+let pd4 = ["x": -0, "y": 0]
+calc.add(lhs: pd4, rhs: pd4) == ["x": 0, "y": 0]
+calc.subtract(lhs: pd4, rhs: pd4) == ["x": 0, "y": 0]
+
+let pd5 = ["x": 0, "y": 0]
+let pd6 = ["x": -2, "y": +1]
+calc.add(lhs: pd5, rhs: pd6) == ["x": -2, "y": 1]
+calc.subtract(lhs: pd5, rhs: pd6) == ["x": 2, "y": -1]
+
 
 //: ---
 //: ## Test code block
@@ -52,7 +150,7 @@ calc.subtract(lhs: 2, rhs: 2) == 0
 calc.multiply(lhs: 2, rhs: 2) == 4
 calc.divide(lhs: 2, rhs: 2) == 1
 
-calc.mathOp(lhs: 5, rhs: 5, op: { (lhs: Int, rhs: Int) -> Int in (lhs + rjs) + (lhs * rhs) }) == 35
+calc.mathOp(lhs: 5, rhs: 5, op: { (lhs: Int, rhs: Int) -> Int in (lhs + rhs) + (lhs * rhs) }) == 35
     // This style is one way of writing an anonymous function
 calc.mathOp(lhs: 10, rhs: -5, op: { ($0 + $1) + ($0 - $1) }) == 20
     // This is the second, more terse, style; either works
